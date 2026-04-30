@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="dnlib" Version="3.1.0" />
+    <PackageVersion Include="SharpDisasm" Version="1.1.11" />
+  </ItemGroup>
+</Project>
