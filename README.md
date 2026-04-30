@@ -1,4 +1,5 @@
 # .NET-Instruction-Emulator
+
 This project is an extremely helpful toolkit for any reverser dealing with complicated MSIL. using this you can emulate certain instructions complete methods or even just 1 instruction. this can be extremely helpful for many obfuscators i mainly use this in confuserex appfuscator and netguard
 
 this can replace invoking of most methods as you can just run the instructions with this emulator and you have complete control over which instructions are ran and contains events so you can intercept certain instructions
@@ -25,3 +26,7 @@ there are many improvements to be made to this but as of now i have no real inte
 Pan - for the events
 
 NetGuard and ConfuserEx - for making obfuscation where static decryption is harder than just copying and pasting
+
+# Disclaimer
+
+This project was not written by me, and this is just a copy of original source which is quite avalable on the Github. I just create build for it, and Nuget distribution, and I am not responsible for any damage caused by this project. Use it at your own risk.
