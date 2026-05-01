@@ -18,12 +18,15 @@ if (args.Length > 1)
 // Generate a random sequence of opcodes. The number of opcodes is also random.
 Console.WriteLine("Using seed: " + seed);
 var random = new Random(seed);
+TextWriter stringWriter = new StringWriter();
 for (var i = 0; i < iterationsCount; i++)
 {
-    var result = Validate(random);
+    stringWriter = new StringWriter();
+    var result = Validate(random, stringWriter);
     if (!result)
     {
-        Console.WriteLine($"Mismatch detected for seed {seed}!");
+        Console.WriteLine($"Mismatch detected!");
+        Console.WriteLine(stringWriter.ToString());
         return 1;
     }
 }
@@ -32,7 +35,7 @@ Console.WriteLine("Emulation successful, results match.");
 return 0;
 
 // Validates the randomly generated 
-bool Validate(Random random)
+bool Validate(Random random, TextWriter logger)
 {
     // Create a new module. The string passed in is the name of the module,
     // not the file name.
@@ -122,13 +125,6 @@ startGeneration:
     // Return last stack value as the return value of the method.
     epBody.Instructions.Add(OpCodes.Ret.ToInstruction());
 
-    Console.WriteLine("Generated instructions");
-    foreach (var instr in epBody.Instructions)
-    {
-        Console.WriteLine(instr);
-    }
-    Console.WriteLine();
-
     // Save the assembly to a file on disk
     var memoryStream = new MemoryStream();
     mod.Write(memoryStream);
@@ -147,6 +143,21 @@ startGeneration:
         emulation.ValueStack.Parameters[p] = inputValues[i];
     }
     emulation.ValueStack.Locals = [.. Enumerable.Range(0, 10).Select(_ => (dynamic)0)];
+
+    logger.WriteLine("Parameters");
+    for (int i = 0; i < 10; i++)
+    {
+        logger.WriteLine($"Parameter {i}: {inputValues[i]}");
+    }
+    logger.WriteLine();
+    logger.WriteLine("Generated instructions");
+    foreach (var instr in epBody.Instructions)
+    {
+        logger.WriteLine(instr);
+    }
+    logger.WriteLine();
+
+
     int emulatorResult = 0;
     Exception? emulationException = null;
     try
@@ -154,12 +165,12 @@ startGeneration:
         emulation.Emulate();
         var v = emulation.ValueStack.CallStack.Pop();
         emulatorResult = (int)v;
-        Console.WriteLine($"Result {emulatorResult}");
+        logger.WriteLine($"Result {emulatorResult}");
     }
     catch (Exception ex)
     {
         emulationException = ex;
-        Console.WriteLine($"Emulation failed with exception: {ex}");
+        logger.WriteLine($"Emulation failed with exception: {ex}");
     }
 
 
@@ -172,17 +183,17 @@ startGeneration:
         dotnetResult = (int)t.DeclaredMethods.ElementAt(0).Invoke(
             null,
             inputValues);
-        Console.WriteLine($".NET Result {dotnetResult}");
+        logger.WriteLine($".NET Result {dotnetResult}");
     }
     catch (System.Reflection.TargetInvocationException tiex)
     {
         dotnetException = tiex.InnerException;
-        Console.WriteLine($".NET failed with exception: {tiex.InnerException}");
+        logger.WriteLine($".NET failed with exception: {tiex.InnerException}");
     }
     catch (Exception ex)
     {
         dotnetException = ex;
-        Console.WriteLine($".NET failed with exception: {ex}");
+        logger.WriteLine($".NET failed with exception: {ex}");
     }
 
     if (emulationException is not null && dotnetException is not null)
