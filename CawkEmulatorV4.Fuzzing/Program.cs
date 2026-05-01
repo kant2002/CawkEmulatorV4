@@ -25,13 +25,13 @@ for (var i = 0; i < iterationsCount; i++)
     var result = Validate(random, stringWriter);
     if (!result)
     {
-        Console.WriteLine($"Mismatch detected!");
+        Console.WriteLine($"Mismatch detected after running {i + 1} out of {iterationsCount}!");
         Console.WriteLine(stringWriter.ToString());
         return 1;
     }
 }
 
-Console.WriteLine("Emulation successful, results match.");
+Console.WriteLine($"Emulation successful, results match after running {iterationsCount} iterations.");
 return 0;
 
 // Validates the randomly generated 
