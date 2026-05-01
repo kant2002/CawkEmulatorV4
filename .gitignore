@@ -482,3 +482,4 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+/CawkEmulatorV4.Fuzzing/Properties/launchSettings.json
